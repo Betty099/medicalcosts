@@ -1,13 +1,16 @@
 from _typeshed import Self
 from typing import List,AnyStr
-import math 
 from enum import Enum
-
+import math
 
 class Document:
-    def Load_Document():
+    def __init__(self) -> None:
+        self.Load_Document()
+    
+    def Load_Document(self):
         source = open('./data/insurance.csv', 'r')
         lines = source.readlines()
+        # self.Parse_lines()
         source.close()
 
     def Parse_lines(self,lines:List[str]):
