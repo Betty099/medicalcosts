@@ -15,11 +15,10 @@ class Document:
         source.close()
 
     def Parse_lines(self,lines:List[str]):
-        self.lines:List[Row] = []
+        self.rows:List[Row] = []
         for line in lines: 
-            row_list:List[str] = line.strip().split(',')
-            row = Row(row_list)
-            self.lines.append(row)
+            row = Row(line)
+            self.rows.append(row)
 
     def Parse_header(self, lines:List[str]):
         pass
@@ -33,11 +32,13 @@ class Region(Enum):
 
 
 class Row:
-    def __init__(self) -> None:
-        pass
+    def __init__(self, line:str) -> None:
+        list_values:List[str] = line.strip().split(',')
+        self.age:int = self.Parse_age(list_values[0])
 
-    def Parse_age(self) -> int:
-        pass
+
+    def Parse_age(self,value:str) -> int:
+        return int(value)
 
     def Parse_sex(self) -> bool:
         pass
@@ -52,6 +53,7 @@ class Row:
         pass 
 
     def Parse_region(self) -> Region:
+        # nejtezsi
         pass
 
     def Parse_charges(self):
