@@ -1,4 +1,4 @@
-from _typeshed import Self
+# from _typeshed import Self
 from typing import List,AnyStr
 from enum import Enum
 import math
@@ -28,36 +28,51 @@ class Region(Enum):
     Southeast = 0
     Southwest = 1
     Northeast = 2
-    Nortwest = 3
+    Northwest = 3
 
 
 class Row:
     def __init__(self, line:str) -> None:
         list_values:List[str] = line.strip().split(',')
         self.age:int = self.Parse_age(list_values[0])
+        self.isfemale:bool = self.Parse_sex(list_values[1])
+        self.bmi:float = self.Parse_bmi(list_values[2])
+        self.children_count:int = self.Parse_children_count(list_values[3])
+        self.smoker:bool = self.Parse_smoker(list_values[4])
+        self.region:Region = self.Parse_region(list_values[5])
+        self.charges:float = self.Parse_charges(list_values[6])
 
 
     def Parse_age(self,value:str) -> int:
         return int(value)
 
-    def Parse_sex(self) -> bool:
-        pass
+    def Parse_sex(self,value:str) -> bool:
+        if value == 'female':
+            return True
+        return False
 
     def Parse_bmi(self) -> float:
-        pass
+        return float
 
     def Parse_children_count(self) -> int:
-        pass
+        return int
 
     def Parse_smoker(self) -> bool:
-        pass 
+        return bool
 
-    def Parse_region(self) -> Region:
-        # nejtezsi
-        pass
+    def Parse_region(self,value:str) -> Region:
+        if value == 'southeast':
+            return Region.Southeast
+        elif value == 'southwest':
+            return Region.Southwest
+        elif value == 'northeast':
+            return Region.Northeast
+        else:
+            return Region.Northwest
 
-    def Parse_charges(self):
-        pass
+    def Parse_charges(self) -> float:
+        return float
 
 
-
+document = Document()
+document.Load_Document()
