@@ -51,14 +51,16 @@ class Row:
             return True
         return False
 
-    def Parse_bmi(self) -> float:
-        return float
+    def Parse_bmi(self,value) -> float:
+        return float(value)
 
-    def Parse_children_count(self) -> int:
-        return int
+    def Parse_children_count(self,value) -> int:
+        return int(value)
 
-    def Parse_smoker(self) -> bool:
-        return bool
+    def Parse_smoker(self,value) -> bool:
+        if value == 'yes':
+            return True
+        return False
 
     def Parse_region(self,value:str) -> Region:
         if value == 'southeast':
@@ -70,8 +72,8 @@ class Row:
         else:
             return Region.Northwest
 
-    def Parse_charges(self) -> float:
-        return float
+    def Parse_charges(self,value) -> float:
+        return float(value)
 
 
 document = Document()
