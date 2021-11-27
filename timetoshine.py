@@ -23,6 +23,35 @@ class Document:
     def Parse_header(self, lines:List[str]):
         pass
 
+    def average_column(self,value)->float:
+        list_values = []
+        for value in self.rows:
+            list_values.append(value)
+            return list_values
+        average = sum(list_values) / len(list_values)
+        average(float)
+        return average
+
+    def sum_column(self,value)-> float:
+        list_values = []
+        for value in self.rows:
+            list_values.append(value)
+            return list_values
+        return sum(list_values)
+
+    def standard_deviation(self,value)-> float:
+        list_variance= []
+        value = 0
+        for value in self.rows:
+            variance = (value - self.average_column(value)) **2
+            list_variance.append(variance)
+            return list_variance
+        std = math.sqrt((sum(list_variance) / len(list_variance)))
+        return std
+
+
+
+
 
 class Region(Enum):
     Southeast = 0
@@ -76,5 +105,6 @@ class Row:
         return float(value)
 
 
-document = Document()
-document.Load_Document()
+
+
+# document = Document()
