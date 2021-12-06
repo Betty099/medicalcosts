@@ -2,6 +2,7 @@
 from typing import List,AnyStr
 from enum import Enum
 import math
+from matplotlib import pyplot as plt 
 
 class Document:
     def __init__(self) -> None:
@@ -23,13 +24,11 @@ class Document:
     def Parse_header(self, lines:List[str]):
         pass
 
-    def average_column(self,value)->float:
+    def average_column(self, select_number)->float:
         list_values = []
-        for value in self.rows:
-            list_values.append(value)
-            return list_values
+        for row in self.rows:
+            list_values.append(row.charges)
         average = sum(list_values) / len(list_values)
-        average(float)
         return average
 
     def sum_column(self,value)-> float:
@@ -48,6 +47,44 @@ class Document:
             return list_variance
         std = math.sqrt((sum(list_variance) / len(list_variance)))
         return std
+
+    def region_distribution(self)-> plt:
+        values_region = []
+        for row in self.rows:
+            values_region.append(row.region)
+        Southeast_count = values_region.count(Region.Southeast)
+        Southwest_count = values_region.count(Region.Southwest)
+        Northeast_count = values_region.count(Region.Northeast)
+        Northwest_count = values_region.count(Region.Northwest)
+        names = ['southeast', 'southwest', 'northeast','northwest']
+        values = [Southeast_count, Southwest_count, Northeast_count, Northwest_count]
+        maximum = max(values)
+        normalized_values = []
+        for value in values:
+            normalized = value/maximum
+            normalized_values.append(normalized)
+        plt.figure(figsize=(1,3))
+
+        plt.subplot(1,3,1)
+        plt.bar(names,normalized_values)
+        plt.xticks(range(4),names,rotation = 90)
+        
+        plt.subplot(1,3,2)
+        plt.scatter(names, normalized_values)
+        plt.xticks(range(4),names,rotation = 90)
+        
+        plt.subplot(1,3,3)
+        plt.plot(normalized_values)
+        plt.xticks(range(4),names,rotation = 90)
+
+        # fig.('Regional Distribution')
+        plt.show()
+
+        
+    # regrese = pro vek a cenu pojistky (predpovis cenu pojistky na zaklade veku - kolik pro takovej vek ocekam pojistku (polinomicka ale muzes udelat linearni (quadraticky)))
+    # methoda leastsquares = 
+
+        
 
 
 
@@ -107,4 +144,6 @@ class Row:
 
 
 
-# document = Document()
+document = Document()
+# average = document.average_column()
+document.region_distribution()
