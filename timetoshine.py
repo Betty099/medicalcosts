@@ -3,6 +3,7 @@ from typing import List,AnyStr
 from enum import Enum
 import math
 from matplotlib import pyplot as plt 
+import numpy as np 
 
 class Document:
     def __init__(self) -> None:
@@ -24,12 +25,21 @@ class Document:
     def Parse_header(self, lines:List[str]):
         pass
 
-    def average_column(self, select_number)->float:
+    def average_column_charges(self)->float:
         list_values = []
         for row in self.rows:
             list_values.append(row.charges)
         average = sum(list_values) / len(list_values)
         return average
+
+    def average_column_age(self)->float:
+        list_values = []
+        for row in self.rows:
+            list_values.append(row.age)
+        average = sum(list_values) / len(list_values)
+        return average
+
+        # selector a pouzil lambdu -> v te lambe bude brat parametr row a v tom sahne na jeden parametr (funkce sahne na lambdu a da selector)
 
     def sum_column(self,value)-> float:
         list_values = []
@@ -42,7 +52,7 @@ class Document:
         list_variance= []
         value = 0
         for value in self.rows:
-            variance = (value - self.average_column(value)) **2
+            variance = (value - self.average_column_charges(value)) **2
             list_variance.append(variance)
             return list_variance
         std = math.sqrt((sum(list_variance) / len(list_variance)))
@@ -78,11 +88,90 @@ class Document:
         plt.xticks(range(4),names,rotation = 90)
 
         # fig.('Regional Distribution')
+        # plt.show()
+
+    def regrese_age(self)->plt:
+        x_age = []
+        y_insurance_in_USD = []
+        for row in self.rows:
+            x_age.append(row.age)
+            y_insurance_in_USD.append(row.charges)
+        # age_array = np.array(x_age)
+        # list_of_errors_insurance = []
+        # for value in insurance_in_USD:
+        #     error = (value - self.average_column(value)**2)
+        #     list_of_errors_insurance.append(error)
+        
+        # plt.plot(age,list_of_errors_insurance)
+        n = len(x_age)
+        
+        average_insurance = self.average_column_charges()
+        average_age = self.average_column_age()
+
+
+        errors_x = []
+        errors_y = []
+        for x in x_age:
+            x_error = x - average_age
+            errors_x.append(x_error)
+        for y in y_insurance_in_USD:
+            y_error = y - average_insurance
+            errors_y.append(y_error)
+
+        variance_list_x = []
+        for x in errors_x:
+            var = x **2
+            variance_list_x.append(var)
+        sum_deviation_x = sum(variance_list_x)
+        varinace_x = sum_deviation_x / n
+        variance_list_y = []
+        for y in errors_y:
+            var = y ** 2
+            variance_list_y.append(var)
+        sum_deviation_y = sum(variance_list_y)
+        variance_y = sum_deviation_y / n
+
+        # prejmenuj si nesmysly
+
+        errors_x_y_times = [a*b for a,b in zip(errors_x,errors_y)]
+        covariance_x_y = sum(errors_x_y_times)/n
+        a_1 = covariance_x_y / varinace_x
+        a_0 = average_insurance - (a_1 * average_age)
+        
+        prediction_start = (a_1 * x_age[0]) + a_0
+        prediction_end = (a_1 * x_age[-1]) + a_0
+        prediction_insurance = []
+        for x in x_age:
+            prediction = a_1 * x + a_0
+            prediction_insurance.append(prediction)
+        loss = 0.0
+        for y_real , y_prediction in zip(y_insurance_in_USD,prediction_insurance):
+            rozdil = (y_real - y_prediction) **2
+            loss += rozdil
+            
+        # udel znova s np
+
+        print('loss', loss)
+        print('a1: ', a_1)
+        print('a0: ', a_0)
+
+        plt.figure()
+        plt.suptitle('Linear Regrese')
+        plt.xlabel('Age')
+        plt.ylabel('Insurance') 
+
+
+        plt.scatter(x_age,y_insurance_in_USD)
+        plt.plot([x_age[0], x_age[-1]],[prediction_start, prediction_end],'-r')
+        plt.plot([x_age[0], x_age[-1]],[average_insurance, average_insurance],'-g')
         plt.show()
 
+    
         
     # regrese = pro vek a cenu pojistky (predpovis cenu pojistky na zaklade veku - kolik pro takovej vek ocekam pojistku (polinomicka ale muzes udelat linearni (quadraticky)))
     # methoda leastsquares = 
+    # clustering tri kategorie k_means
+    # k_means jsou skipiny -> ja mu rekne kolik skupin
 
         
 
@@ -146,4 +235,10 @@ class Row:
 
 document = Document()
 # average = document.average_column()
-document.region_distribution()
+# document.region_distribution()
+# document.regrese_age()
+
+
+
+t = np.arange(0,10,1)
+print(t[t>5])
