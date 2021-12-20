@@ -3,7 +3,8 @@ from typing import List,AnyStr
 from enum import Enum
 import math
 from matplotlib import pyplot as plt 
-import numpy as np 
+import numpy as np
+from numpy.lib.polynomial import poly 
 
 class Document:
     def __init__(self) -> None:
@@ -58,7 +59,7 @@ class Document:
         std = math.sqrt((sum(list_variance) / len(list_variance)))
         return std
 
-    def region_distribution(self)-> plt:
+    def region_distribution(self)-> None:
         values_region = []
         for row in self.rows:
             values_region.append(row.region)
@@ -135,6 +136,7 @@ class Document:
 
         errors_x_y_times = [a*b for a,b in zip(errors_x,errors_y)]
         covariance_x_y = sum(errors_x_y_times)/n
+        print(f'covar_x_y:{covariance_x_y}')
         a_1 = covariance_x_y / varinace_x
         a_0 = average_insurance - (a_1 * average_age)
         
@@ -172,6 +174,25 @@ class Document:
     # methoda leastsquares = 
     # clustering tri kategorie k_means
     # k_means jsou skipiny -> ja mu rekne kolik skupin
+
+    def np_regression(self):
+        x = []
+        y = []
+        for row in self.rows:
+            x.append(row.age)
+            y.append(row.charges)
+        x = np.array(x)
+        y = np.array(y)
+        cov_x_y = np.cov(x,y)
+        var_x = np.var(x)
+        y_mean = np.mean(y)
+        x_mean = np.mean(x)
+
+        a_1 = cov_x_y[0] / var_x
+        a_0 = y_mean - (a_1 * x_mean)
+        polyfit = np.polynomial.polynomial.polyfit(x,y,1)
+        print(f'a1: {a_1} \n a0: {a_0} \n polyfit: {polyfit}')
+
 
         
 
@@ -238,7 +259,5 @@ document = Document()
 # document.region_distribution()
 # document.regrese_age()
 
-
-
-t = np.arange(0,10,1)
-print(t[t>5])
+document.np_regression()
+document.regrese_age()
