@@ -4,7 +4,21 @@ from enum import Enum
 import math
 from matplotlib import pyplot as plt 
 import numpy as np
+from numpy.lib.function_base import average
 from numpy.lib.polynomial import poly 
+from random import randint
+
+
+class Point: 
+    def __init__(self,x,y) -> None:
+        self.x:float = x
+        self.y:float = y
+
+    def distance(self,point) -> float:
+        point_distance = math.sqrt((self.x - point.x)**2 + (self.y - point.y)**2)
+        return point_distance
+
+
 
 class Document:
     def __init__(self) -> None:
@@ -151,7 +165,6 @@ class Document:
             rozdil = (y_real - y_prediction) **2
             loss += rozdil
             
-        # udel znova s np
 
         print('loss', loss)
         print('a1: ', a_1)
@@ -173,7 +186,7 @@ class Document:
     # regrese = pro vek a cenu pojistky (predpovis cenu pojistky na zaklade veku - kolik pro takovej vek ocekam pojistku (polinomicka ale muzes udelat linearni (quadraticky)))
     # methoda leastsquares = 
     # clustering tri kategorie k_means
-    # k_means jsou skipiny -> ja mu rekne kolik skupin
+    # k_means jsou skupiny -> ja mu rekne kolik skupin
 
     def np_regression(self):
         x = []
@@ -194,6 +207,62 @@ class Document:
         print(f'a1: {a_1} \n a0: {a_0} \n polyfit: {polyfit}')
 
 
+    def k_means(self):
+        points:List[Point] = []
+        ages = []
+        charges = []
+        for row in self.rows: 
+            ages.append(row.age)
+            charges.append(row.charges)
+        age_max = max(ages)
+        charges_max = max(charges)
+
+        for row in self.rows:
+            point = Point(row.age / age_max, row.charges / charges_max)
+            points.append(point)
+        k_1 = Point(0,0)
+        k_2 = Point(1,1)
+        n = 3
+        for i in range(n):
+            k_1_points:List[Point] = []
+            k_2_points:List[Point] = []
+            for point in points:
+                k_1_distance = point.distance(k_1)
+                k_2_distance = point.distance(k_2)
+                if k_1_distance <= k_2_distance:
+                    k_1_points.append(point)
+                else: 
+                    k_2_points.append(point)
+            k_1_x = []
+            k_1_y = []
+            for point in k_1_points:
+                k_1_x.append(point.x)
+                k_1_y.append(point.y)
+            
+            k_2_x = []
+            k_2_y = []
+            for point in k_2_points:
+                k_2_x.append(point.x)
+                k_2_y.append(point.y)
+            
+            plt.figure()
+            plt.scatter(k_1_x,k_1_y, c = 'r')
+            plt.scatter(k_2_x,k_2_y, c = 'b')
+            plt.scatter(k_1.x , k_1.y , 100, c = 'g')
+            plt.scatter(k_2.x, k_2.y, 100, c = 'y')
+            plt.show()
+
+            k_1 = Point(average(k_1_x), average(k_1_y))
+            k_2 = Point(average(k_2_x), average(k_2_y))
+
+        
+       
+        
+        
+
+
+
+        
         
 
 
@@ -259,5 +328,6 @@ document = Document()
 # document.region_distribution()
 # document.regrese_age()
 
-document.np_regression()
-document.regrese_age()
+# document.np_regression()
+# document.regrese_age()
+document.k_means()
