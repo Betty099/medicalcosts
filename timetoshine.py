@@ -7,6 +7,7 @@ import numpy as np
 from numpy.lib.function_base import average
 from numpy.lib.polynomial import poly 
 from random import randint
+from typing import Callable
 
 
 class Point: 
@@ -41,18 +42,27 @@ class Document:
         pass
 
     def average_column_charges(self)->float:
-        list_values = []
-        for row in self.rows:
-            list_values.append(row.charges)
-        average = sum(list_values) / len(list_values)
-        return average
+        # list_values = []
+        # for row in self.rows:
+        #     list_values.append(row.charges)
+        # average = sum(list_values) / len(list_values)
+        # return average
+        return self.average_column(lambda row: row.charges)
+        
 
     def average_column_age(self)->float:
+        return self.average_column(lambda row: row.age)
+
+
+    def average_column(self, select_property: Callable):
         list_values = []
         for row in self.rows:
-            list_values.append(row.age)
+            selected_value = select_property(row)
+            list_values.append(selected_value)
         average = sum(list_values) / len(list_values)
         return average
+    
+
 
         # selector a pouzil lambdu -> v te lambe bude brat parametr row a v tom sahne na jeden parametr (funkce sahne na lambdu a da selector)
 
@@ -185,7 +195,6 @@ class Document:
         
     # regrese = pro vek a cenu pojistky (predpovis cenu pojistky na zaklade veku - kolik pro takovej vek ocekam pojistku (polinomicka ale muzes udelat linearni (quadraticky)))
     # methoda leastsquares = 
-    # clustering tri kategorie k_means
     # k_means jsou skupiny -> ja mu rekne kolik skupin
 
     def np_regression(self):
@@ -330,4 +339,6 @@ document = Document()
 
 # document.np_regression()
 # document.regrese_age()
-document.k_means()
+# document.k_means()
+promena = document.average_column(lambda row: row.charges)
+print(promena)
